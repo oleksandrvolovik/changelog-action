@@ -10,6 +10,9 @@ test('test run', () => {
   process.env['INPUT_INCLUDEREFISSUES'] = 'true'
   process.env['INPUT_USEGITMOJIS'] = 'true'
   process.env['INPUT_INCLUDEINVALIDCOMMITS'] = 'false'
+  process.env['INPUT_REVERSEORDER'] = 'false'
+  process.env['INPUT_EXCLUDETYPES'] = 'fix,perf,refactor,test,build,doc,style,chore,other'
+  process.env['INPUT_GOOGLEPLAYMODE'] = 'true'
 
   require('./index.js')
 })

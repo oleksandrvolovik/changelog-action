@@ -73,6 +73,7 @@ async function main () {
   const useGitmojis = core.getBooleanInput('useGitmojis')
   const includeInvalidCommits = core.getBooleanInput('includeInvalidCommits')
   const reverseOrder = core.getBooleanInput('reverseOrder')
+  const googlePlayMode = core.getBooleanInput('googlePlayMode')
   const gh = github.getOctokit(token)
   const owner = github.context.repo.owner
   const repo = github.context.repo.repo
@@ -262,7 +263,11 @@ async function main () {
       changesVar.push('')
     }
     changesFile.push(useGitmojis ? `### ${type.icon} ${type.header}` : `### ${type.header}`)
-    changesVar.push(useGitmojis ? `### ${type.icon} ${type.header}` : `### ${type.header}`)
+    if (googlePlayMode) {
+      changesVar.push(`${type.header}`)
+    } else {
+      changesVar.push(useGitmojis ? `### ${type.icon} ${type.header}` : `### ${type.header}`)
+    }
 
     const relIssuePrefix = type.relIssuePrefix || 'addresses'
 
@@ -284,8 +289,13 @@ async function main () {
         owner,
         repo
       })
+
       changesFile.push(`- [\`${commit.sha.substring(0, 7)}\`](${commit.url}) - ${scope}${subjectFile.output}`)
-      changesVar.push(`- [\`${commit.sha.substring(0, 7)}\`](${commit.url}) - ${scope}${subjectVar.output}`)
+      if (googlePlayMode) {
+        changesVar.push(`• ${commit.subject}`)
+      } else {
+        changesVar.push(`- [\`${commit.sha.substring(0, 7)}\`](${commit.url}) - ${scope}${subjectVar.output}`)
+      }
 
       if (includeRefIssues && subjectVar.prs.length > 0) {
         for (const prId of subjectVar.prs) {
